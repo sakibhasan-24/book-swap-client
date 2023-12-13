@@ -4,14 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Signup() {
   const navigate = useNavigate();
   const [signUpFormData, setSignUpFormData] = useState({});
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleSignUpValue = (e) => {
-    console.log([e.target.name, e.target.value]);
+    // console.log([e.target.name, e.target.value]);
     setSignUpFormData({ ...signUpFormData, [e.target.name]: e.target.value });
   };
   //   console.log(signUpFormData);
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     fetch("http://localhost:5000/signup", {
       method: "POST",
       credentials: "include",
@@ -22,13 +26,25 @@ export default function Signup() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.success === true) {
+          setLoading(false);
+          setError(null);
           navigate("/");
         }
+        if (data.success === false) {
+          setLoading(false);
+          setError(data.errorMessage);
+          //   console.log("data.message", data.errorMessage);
+          return;
+        }
       })
-      .catch((e) => console.log(e.message));
+      .catch((e) => {
+        setLoading(false);
+        setError(e.message);
+      });
   };
+  //   console.log(error);
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-center text-3xl font-bold text-slate-600 mt-6">
@@ -59,8 +75,11 @@ export default function Signup() {
           placeholder="password"
           className="rounded-lg p-3 bg-slate-200 focus:outline-none"
         />
-        <button className="bg-slate-800 text-white px-4 py-3 rounded-lg font-bold uppercase disabled:bg-slate-600">
-          Sign Up
+        <button
+          disabled={loading}
+          className="bg-slate-800 text-white px-4 py-3 rounded-lg font-bold uppercase disabled:bg-slate-600"
+        >
+          {loading ? "Loading..." : "Sign Up"}
         </button>
       </form>
       <p className="text-center font-semibold text-xl">
@@ -68,6 +87,9 @@ export default function Signup() {
         <Link className="text-blue-500 ml-4" to="/login">
           login
         </Link>
+      </p>
+      <p className="text-red-500 font-semibold text-center text-xs">
+        {error && error}
       </p>
     </div>
   );

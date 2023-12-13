@@ -23,3 +23,12 @@
 - implement ui
 - observer the signup value(email,userName,password)
 - add validation for signup form
+
+* using fetch and some credintials send data from client to server and store it
+
+### login page
+
+- implement ui
+
+* observer the login value(email,password)
+* add validation for login form
