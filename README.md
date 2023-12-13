@@ -15,3 +15,11 @@
 - add logo in header
 - add search bar in header
 - add signup and login Link in header (responsive for mobile view)
+
+# pages
+
+### signUp page
+
+- implement ui
+- observer the signup value(email,userName,password)
+- add validation for signup form
