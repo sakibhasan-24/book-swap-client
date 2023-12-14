@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import getStorage from "redux-persist/es/storage/getStorage";
 import {
   getStorage,
@@ -8,14 +8,19 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../../firebase.config";
+import { updateFailure, updateStart, updateSuccess } from "../redux/user";
 
 export default function Profile() {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  //   console.log(currentUser.userData);
   const [imageFile, setImageFile] = useState(undefined);
+  const [formData, setFormData] = useState({});
   const [uploadPercentage, setUploadPercentage] = useState(0);
   //   console.log(imageFile);
   const fileRef = useRef(null);
-  console.log(imageFile?.name);
+  //   console.log(imageFile?.name);
+  //   console.log(formData);
   //   after image then render
 
   useEffect(() => {
@@ -30,36 +35,19 @@ export default function Profile() {
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             const progress = Math.trunc(
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
             setUploadPercentage(progress);
-            console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-            }
           },
           (error) => {
-            switch (error.code) {
-              case "storage/unauthorized":
-                break;
-              case "storage/canceled":
-                break;
-
-              case "storage/unknown":
-                break;
-            }
+            console.log(error);
           },
           () => {
             // Upload completed successfully, now we can get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log("File available at", downloadURL);
+              //   console.log("File available at", downloadURL);
+              setFormData({ ...formData, photo: downloadURL });
             });
           }
         );
@@ -67,43 +55,44 @@ export default function Profile() {
         console.log(error);
       }
     }
-
-    // const uploadTask = uploadBytesResumable(storageRef, file);
-    // uploadTask.on(
-    //   "state_changed",
-    //   (snapshot) => {
-    //     const progress =
-    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //     console.log("Upload is " + progress + "% done");
-    //     switch (snapshot.state) {
-    //       case "paused":
-    //         console.log("Upload is paused");
-    //         break;
-    //       case "running":
-    //         console.log("Upload is running");
-    //         break;
-    //     }
-    //   },
-    //   (error) => {
-    //     switch (error.code) {
-    //       case "storage/unauthorized":
-    //         break;
-    //       case "storage/canceled":
-    //         break;
-
-    //       case "storage/unknown":
-    //         break;
-    //     }
-    //   },
-    //   () => {
-    //     // Upload completed successfully, now we can get the download URL
-    //     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //       console.log("File available at", downloadURL);
-    //     });
-    //   }
-    // );
   }, [imageFile]);
 
+  const handleFormData = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  //   console.log(formData);
+  const handleFormDataUpdate = (e) => {
+    e.preventDefault();
+
+    // console.log("clicked");
+
+    try {
+      dispatch(updateStart(true));
+      fetch(`http://localhost:5000/update/${currentUser?.userData?._id}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          //   console.log("update", data);
+
+          if (data.success === false) {
+            dispatch(updateFailure(data.message));
+            return;
+          }
+          //   console.log(data.message);
+          //   console.log("updated ", data);
+          dispatch(updateSuccess(data));
+        });
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
+  //   console.log(formData);
   return (
     <div className=" max-w-lg mx-auto p-4">
       <h1 className="font-bold text-slate-600 text-center text-4xl mt-8">
@@ -112,15 +101,14 @@ export default function Profile() {
       <input
         onChange={(e) => setImageFile(e.target.files[0])}
         type="file"
-        id=""
         accept="image/*"
         ref={fileRef}
         hidden
       />
-      <form className="flex flex-col gap-6 ">
+      <form className="flex flex-col gap-6 " onSubmit={handleFormDataUpdate}>
         <img
           onClick={() => fileRef.current.click()}
-          src={currentUser?.user?.photo}
+          src={formData.photo || currentUser?.userData?.photo}
           className="w-20 h-20 rounded-full object-cover cursor-pointer mt-8 self-center"
           alt="photo"
         />
@@ -133,16 +121,20 @@ export default function Profile() {
         <input
           type="text"
           name="username"
+          defaultValue={currentUser?.userData?.username}
           id="username"
           placeholder="username..."
           className="border p-3 rounded-lg focus:outline-none"
+          onChange={handleFormData}
         />
         <input
           type="email"
           name="email"
           id="email"
+          defaultValue={currentUser?.userData?.email}
           placeholder="email..."
           className="border p-3 rounded-lg focus:outline-none"
+          onChange={handleFormData}
         />
         <input
           type="password"
@@ -150,6 +142,7 @@ export default function Profile() {
           id="password"
           placeholder="********"
           className="border p-3 rounded-lg focus:outline-none"
+          onChange={handleFormData}
         />
         <button className="bg-green-950 text-white p-4 rounded-lg font-bold uppercase">
           Update Profile

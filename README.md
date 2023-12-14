@@ -85,3 +85,6 @@
 - then use this reference to upload image (profile image click)
 
 * upload image and using progress(%)
+* update data
+* if any update found store it in form data
+* then send it to server
