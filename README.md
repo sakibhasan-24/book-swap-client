@@ -32,3 +32,27 @@
 
 * observer the login value(email,password)
 * add validation for login form
+
+## global state management
+
+# redux
+
+- install redux
+- create store file
+
+* inside file import configureStore and create store
+* inside create store file import reducer and middleware
+* inside main.js file import store and render app(cover )
+* create another folder called user
+* import createslice from redux and create slice for user
+* set initial state for user
+* create slice give a name
+
+* create reducer for user(our case login,signup)
+
+### solve problem(not saving) using redux persist
+
+- install redux persist
+
+* import persistStore from redux-persist
+* cover whole apps using persistgate

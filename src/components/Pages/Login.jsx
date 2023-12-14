@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { signInFailure, signInStart, signInSuccess } from "../redux/user";
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [signInFormData, setSignUpFormData] = useState({});
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  //   old
+  /* const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); */
+  //   smart redux
+  const { loading, error } = useSelector((state) => state.user);
   const handleSignUpValue = (e) => {
     // console.log([e.target.name, e.target.value]);
     setSignUpFormData({ ...signInFormData, [e.target.name]: e.target.value });
@@ -14,7 +20,8 @@ export default function Login() {
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
+    dispatch(signInStart(true));
 
     fetch("http://localhost:5000/signup/login", {
       method: "POST",
@@ -28,20 +35,25 @@ export default function Login() {
       .then((data) => {
         // console.log(data);
         if (data.success === true) {
-          setLoading(false);
-          setError(null);
+          //   setLoading(false);
+          //   setError(null);
+          dispatch(signInFailure(null));
+          dispatch(signInSuccess(data));
           navigate("/");
         }
         if (data.success === false) {
-          setLoading(false);
-          setError(data.errorMessage);
+          //   setLoading(false);
+          //   setError(data.errorMessage);
+          dispatch(signInFailure(data.errorMessage));
+
           //   console.log("data.message", data.errorMessage);
           return;
         }
       })
       .catch((e) => {
-        setLoading(false);
-        setError(e.message);
+        // setLoading(false);
+        // setError(e.message);
+        dispatch(signInFailure(e.message));
       });
   };
   //   console.log(error);
