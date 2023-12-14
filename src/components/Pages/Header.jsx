@@ -37,7 +37,7 @@ export default function Header() {
                 />
               </Link>
               <Link
-                className="text-lg font-semibold text-slate-500"
+                className="hidden md:inline-block lg:inline-block text-lg font-semibold text-slate-500"
                 to="/login"
               >
                 logOut

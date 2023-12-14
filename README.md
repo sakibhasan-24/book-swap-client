@@ -67,3 +67,12 @@
 
 - based on user(currentUser) implement header part
 - signup and login page become logout and profile
+
+## protected profile page
+
+- if no user then redirect to login page
+- if user then show profile page
+
+### design profile page
+
+- learning a new class self center(rarely i used it)
