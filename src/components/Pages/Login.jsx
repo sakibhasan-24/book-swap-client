@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { signInFailure, signInStart, signInSuccess } from "../redux/user";
+import GoogleAuth from "../GoogleAuth";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -85,6 +86,7 @@ export default function Login() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        <GoogleAuth />
       </form>
       <p className="text-center font-semibold text-xl">
         don't Have an account?

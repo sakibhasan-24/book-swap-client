@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import GoogleAuth from "../GoogleAuth";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -81,6 +82,7 @@ export default function Signup() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        <GoogleAuth />
       </form>
       <p className="text-center font-semibold text-xl">
         Have an account?

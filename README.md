@@ -56,3 +56,7 @@
 
 * import persistStore from redux-persist
 * cover whole apps using persistgate
+
+## google auth using firebase
+
+- install firebase
