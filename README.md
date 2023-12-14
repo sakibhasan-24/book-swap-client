@@ -76,3 +76,12 @@
 ### design profile page
 
 - learning a new class self center(rarely i used it)
+
+# using firebase upload image(profile image)
+
+- create a file upload input
+- give it a reference
+- hidden it
+- then use this reference to upload image (profile image click)
+
+* upload image and using progress(%)
