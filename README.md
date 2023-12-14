@@ -60,3 +60,10 @@
 ## google auth using firebase
 
 - install firebase
+
+* implement google log in
+
+## dynamic header part
+
+- based on user(currentUser) implement header part
+- signup and login page become logout and profile
