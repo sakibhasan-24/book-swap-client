@@ -19,7 +19,7 @@ import {
   updateStart,
   updateSuccess,
 } from "../redux/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -200,6 +200,12 @@ export default function Profile() {
         <button className="bg-green-950 text-white p-4 rounded-lg font-bold uppercase">
           Update Profile
         </button>
+        <Link
+          to="/books/create"
+          className="bg-green-950 text-white p-4 rounded-lg font-bold uppercase text-center"
+        >
+          create Books
+        </Link>
       </form>
       <div className="flex items-center justify-between mt-6">
         <p
