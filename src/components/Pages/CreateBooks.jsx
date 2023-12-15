@@ -14,7 +14,29 @@ export default function CreateBooks() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [formData, setFormData] = useState({
     imageUrls: [],
+    title: "",
+    author: "",
+    description: "",
+    price: 0,
+    address: "",
+    genre: "",
+    conditions: "",
+    borrow: false,
+    sell: true,
+    fixed: false,
   });
+  const handleChangeFormData = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+
+    if (
+      e.target.id === "fixed" ||
+      e.target.id === "sell" ||
+      e.target.id === "borrow"
+    ) {
+      setFormData({ ...formData, [e.target.id]: e.target.checked });
+    }
+  };
+
   //   console.log(files.length + formData.imageUrls.length);
   const handleImageUpload = () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -72,6 +94,7 @@ export default function CreateBooks() {
     const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
     setFormData({ ...formData, imageUrls: newImagesUrl });
   };
+  console.log(formData);
   return (
     <main className="max-w-4xl mx-auto p-4">
       <h1 className="text-center font-semibold my-8 text-4xl">Create Books</h1>
@@ -84,6 +107,8 @@ export default function CreateBooks() {
               placeholder="title"
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="title"
+              onChange={handleChangeFormData}
+              defaultValue={formData.title}
             />
             <input
               type="text"
@@ -91,6 +116,8 @@ export default function CreateBooks() {
               placeholder="author"
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="author"
+              onChange={handleChangeFormData}
+              defaultValue={formData.author}
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -100,12 +127,16 @@ export default function CreateBooks() {
               name=""
               placeholder="genre"
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
+              onChange={handleChangeFormData}
+              defaultValue={formData.genre}
             />
             <input
               id="address"
               type="text"
               name=""
               placeholder="address"
+              onChange={handleChangeFormData}
+              defaultValue={formData.address}
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
             />
           </div>
@@ -113,6 +144,8 @@ export default function CreateBooks() {
             id="description"
             cols="10"
             placeholder="description"
+            onChange={handleChangeFormData}
+            defaultValue={formData.description}
             rows="5"
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           ></textarea>
@@ -121,19 +154,39 @@ export default function CreateBooks() {
             name=""
             placeholder="new like new good or old"
             id="conditions"
+            onChange={handleChangeFormData}
+            defaultValue={formData.conditions}
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           />
           <div className="flex gap-4 flex-wrap">
             <div className="flex gap-2">
-              <input type="checkbox" id="borrow" className="w-4" />
+              <input
+                type="checkbox"
+                id="borrow"
+                checked={formData.borrow}
+                className="w-4"
+                onChange={handleChangeFormData}
+              />
               <span>Borrow</span>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" id="fixed" className="w-4" />
+              <input
+                type="checkbox"
+                id="fixed"
+                onChange={handleChangeFormData}
+                className="w-4"
+                checked={formData.fixed}
+              />
               <span>fixed price</span>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" id="sell" className="w-4" />
+              <input
+                type="checkbox"
+                id="sell"
+                className="w-4"
+                onChange={handleChangeFormData}
+                checked={formData.sell}
+              />
               <span>sell</span>
             </div>
           </div>
@@ -143,6 +196,8 @@ export default function CreateBooks() {
             id="price"
             className=" p-2 border-2 border-gray-400 rounded-lg focus:outline-none my-6"
             placeholder="price"
+            defaultValue={formData.price}
+            onChange={handleChangeFormData}
           />
         </div>
         <div>
