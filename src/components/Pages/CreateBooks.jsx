@@ -1,4 +1,77 @@
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { useState } from "react";
+import { app } from "../../firebase.config";
+
 export default function CreateBooks() {
+  const [files, setFiles] = useState([]);
+  const [imageMessageError, setImageMessageError] = useState(null);
+
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+  //   console.log(files.length + formData.imageUrls.length);
+  const handleImageUpload = () => {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      const promises = [];
+      for (let i = 0; i < files.length; i++) {
+        promises.push(storeImage(files[i]));
+      }
+      Promise.all(promises)
+        .then((url) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(url),
+          });
+          setImageMessageError(false);
+        })
+        .catch((e) => {
+          setImageMessageError(
+            "image upload failed,need less than 2 mb per images"
+          );
+        });
+    } else {
+      setImageMessageError("Maximum 6 images allowed and less than 2 mb");
+    }
+  };
+
+  const storeImage = (files) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + "-" + files.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, files);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.trunc(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setUploadProgress(progress);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            //   console.log("File available at", downloadURL);
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+  //   console.log(files);
+  const handleImageDelete = (id) => {
+    const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
+    setFormData({ ...formData, imageUrls: newImagesUrl });
+  };
   return (
     <main className="max-w-4xl mx-auto p-4">
       <h1 className="text-center font-semibold my-8 text-4xl">Create Books</h1>
@@ -73,8 +146,57 @@ export default function CreateBooks() {
           />
         </div>
         <div>
-          <input type="file" name="" id="images" accept="images/*" multiple />
-          <button className="bg-green-300 p-2 rounded-lg">Upload</button>
+          <input
+            onChange={(e) => setFiles(e.target.files)}
+            type="file"
+            name=""
+            id="images"
+            accept="images/*"
+            multiple
+          />
+          <button
+            type="button"
+            onClick={handleImageUpload}
+            className="bg-green-300 p-2 rounded-lg"
+          >
+            Upload
+          </button>
+          {imageMessageError && (
+            <p className="text-red-600 text-center font-semibold">
+              {imageMessageError}
+            </p>
+          )}
+          <div>
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <p className="text-center text-green-600">
+                uploading...{uploadProgress}%
+              </p>
+            )}
+            {uploadProgress === 100 && (
+              <p className="text-green-400">successfully Uploaded</p>
+            )}
+          </div>
+
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url, idx) => {
+              return (
+                <div key={idx} className="w-1/2 my-6">
+                  <div className="border-2 border-gray-500 p-2 flex items-center justify-between">
+                    <img
+                      src={url}
+                      alt="images"
+                      className="w-[100px] h-[100px] rounded-md object-cover"
+                    />
+                    <p
+                      onClick={() => handleImageDelete(idx)}
+                      className="text-red-800 cursor-pointer font-bold hover:text-red-300"
+                    >
+                      delete
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
         </div>
         <input
           type="submit"
