@@ -88,3 +88,11 @@
 * update data
 * if any update found store it in form data
 * then send it to server
+
+# user delete
+
+- delete user from server
+- delete user from database
+- redirect login page
+
+* delete cookie

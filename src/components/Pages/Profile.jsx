@@ -8,12 +8,21 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../../firebase.config";
-import { updateFailure, updateStart, updateSuccess } from "../redux/user";
+import {
+  deleteFailure,
+  deleteStart,
+  deleteSuccess,
+  updateFailure,
+  updateStart,
+  updateSuccess,
+} from "../redux/user";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  //   console.log(currentUser.userData);
+  console.log(currentUser);
   const [imageFile, setImageFile] = useState(undefined);
   const [formData, setFormData] = useState({});
   const [uploadPercentage, setUploadPercentage] = useState(0);
@@ -56,7 +65,7 @@ export default function Profile() {
       }
     }
   }, [imageFile]);
-
+  //   console.log(formData.photo);
   const handleFormData = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -93,6 +102,25 @@ export default function Profile() {
     }
   };
   //   console.log(formData);
+  const handleDelete = (id) => {
+    try {
+      dispatch(deleteStart(true));
+      fetch(`http://localhost:5000/delete/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("delete", data);
+          if (data.success === true) {
+            dispatch(deleteSuccess(data));
+          }
+          navigate("/login");
+        });
+    } catch (error) {
+      dispatch(deleteFailure(error.message));
+    }
+  };
   return (
     <div className=" max-w-lg mx-auto p-4">
       <h1 className="font-bold text-slate-600 text-center text-4xl mt-8">
@@ -149,7 +177,12 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex items-center justify-between mt-6">
-        <p className="text-red-800 font-bold  cursor-pointer">Delete Account</p>
+        <p
+          onClick={() => handleDelete(currentUser.userData._id)}
+          className="text-red-800 font-bold  cursor-pointer"
+        >
+          Delete Account
+        </p>
         <p className="text-red-500 font-bold sm:inline-block md:hidden lg:hidden ">
           Sign Out
         </p>

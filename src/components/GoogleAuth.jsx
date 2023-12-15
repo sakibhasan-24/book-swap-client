@@ -2,13 +2,14 @@ import React from "react";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { app } from "../firebase.config";
 import { useDispatch } from "react-redux";
-import { signInSuccess } from "./redux/user";
+import { signInFailure, signInStart, signInSuccess } from "./redux/user";
 
 export default function GoogleAuth() {
   const dispatch = useDispatch();
   const handleGoogleSignIn = () => {
     //  Sign in with Google
     const auth = getAuth(app);
+    dispatch(signInStart(true));
     const googleProvider = new GoogleAuthProvider();
     signInWithPopup(auth, googleProvider)
       .then((res) => {
@@ -36,11 +37,14 @@ export default function GoogleAuth() {
         })
           .then((res) => res.json())
           .then((data) => {
+            console.log(data);
             if (data.success === true) {
               dispatch(signInSuccess(data));
             }
           })
-          .catch((e) => console.log(e));
+          .catch((e) => {
+            dispatch(signInFailure(e));
+          });
       })
       .catch((e) => console.log(e));
   };
