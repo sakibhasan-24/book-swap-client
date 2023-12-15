@@ -6,11 +6,14 @@ import {
 } from "firebase/storage";
 import { useState } from "react";
 import { app } from "../../firebase.config";
+import { useSelector } from "react-redux";
 
 export default function CreateBooks() {
+  const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [imageMessageError, setImageMessageError] = useState(null);
-
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -90,6 +93,35 @@ export default function CreateBooks() {
     });
   };
   //   console.log(files);
+  const handleFormData = (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError(false);
+      fetch("http://localhost:5000/books/create", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, owner: currentUser.userData._id }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success === true) {
+            setLoading(false);
+            setError(false);
+          }
+          if (data.success === false) {
+            setError(true);
+            setLoading(false);
+          }
+        });
+    } catch (error) {
+      setLoading(false);
+      setError(true);
+    }
+  };
   const handleImageDelete = (id) => {
     const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
     setFormData({ ...formData, imageUrls: newImagesUrl });
@@ -98,7 +130,10 @@ export default function CreateBooks() {
   return (
     <main className="max-w-4xl mx-auto p-4">
       <h1 className="text-center font-semibold my-8 text-4xl">Create Books</h1>
-      <form className="flex flex-col  gap-4 max-w-lg mx-auto">
+      <form
+        onSubmit={handleFormData}
+        className="flex flex-col  gap-4 max-w-lg mx-auto"
+      >
         <div className="">
           <div className="flex flex-col sm:flex-row  gap-4">
             <input
@@ -255,9 +290,10 @@ export default function CreateBooks() {
         </div>
         <input
           type="submit"
-          value="Create A books"
+          value={loading ? "creating..." : "create a books"}
           className="p-4 rounded-lg font-bold text-center bg-green-700 cursor-pointer"
         />
+        {error && <p className="text-red-600 text-xs">something went wrong</p>}
       </form>
     </main>
   );
