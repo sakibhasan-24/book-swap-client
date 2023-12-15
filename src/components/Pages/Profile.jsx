@@ -12,6 +12,9 @@ import {
   deleteFailure,
   deleteStart,
   deleteSuccess,
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
   updateFailure,
   updateStart,
   updateSuccess,
@@ -22,7 +25,7 @@ export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser);
+  //   console.log(currentUser);
   const [imageFile, setImageFile] = useState(undefined);
   const [formData, setFormData] = useState({});
   const [uploadPercentage, setUploadPercentage] = useState(0);
@@ -121,6 +124,28 @@ export default function Profile() {
       dispatch(deleteFailure(error.message));
     }
   };
+  const handleSignOut = () => {
+    try {
+      dispatch(signOutStart(true));
+      fetch(`http://localhost:5000/signout`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success === true) {
+            dispatch(signOutSuccess(data));
+            navigate("/login");
+            return;
+          }
+          if (data.success === false) {
+            dispatch(signOutFailure(data));
+          }
+        });
+    } catch (error) {
+      dispatch(signOutFailure(error));
+    }
+  };
   return (
     <div className=" max-w-lg mx-auto p-4">
       <h1 className="font-bold text-slate-600 text-center text-4xl mt-8">
@@ -183,7 +208,10 @@ export default function Profile() {
         >
           Delete Account
         </p>
-        <p className="text-red-500 font-bold sm:inline-block md:hidden lg:hidden ">
+        <p
+          onClick={handleSignOut}
+          className="text-red-500 font-bold cursor-pointer sm:inline-block md:hidden lg:hidden "
+        >
           Sign Out
         </p>
       </div>

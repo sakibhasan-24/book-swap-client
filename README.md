@@ -96,3 +96,10 @@
 - redirect login page
 
 * delete cookie
+
+# sign out implementation
+
+- sign out from two places
+- make current user null
+
+* redirect to login page

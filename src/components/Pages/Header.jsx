@@ -1,10 +1,34 @@
 import { Link } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOutFailure, signOutStart, signOutSuccess } from "../redux/user";
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   //   console.log(currentUser.user.photo);
 
+  const dispatch = useDispatch();
+  const handleSignOut = () => {
+    try {
+      dispatch(signOutStart(true));
+      fetch(`http://localhost:5000/signout`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success === true) {
+            dispatch(signOutSuccess(data));
+            navigate("/login");
+            return;
+          }
+          if (data.success === false) {
+            dispatch(signOutFailure(data));
+          }
+        });
+    } catch (error) {
+      dispatch(signOutFailure(error));
+    }
+  };
   return (
     <header className="bg-slate-300 shadow-lg">
       <div className="flex justify-between items-center  p-4 max-w-6xl mx-auto">
@@ -38,6 +62,7 @@ export default function Header() {
                 />
               </Link>
               <Link
+                onClick={handleSignOut}
                 className="hidden md:inline-block lg:inline-block text-lg font-semibold text-slate-500"
                 to="/login"
               >
