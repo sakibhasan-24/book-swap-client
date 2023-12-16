@@ -8,6 +8,7 @@ import About from "../Pages/About";
 import Profile from "../Pages/Profile";
 import Protected from "./Protected";
 import CreateBooks from "../Pages/CreateBooks";
+import Books from "../Pages/Books";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
         element: (
           <Protected>
             <CreateBooks />
+          </Protected>
+        ),
+      },
+      {
+        path: "/books/:id",
+        element: (
+          <Protected>
+            <Books />
           </Protected>
         ),
       },

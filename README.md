@@ -103,3 +103,8 @@
 - make current user null
 
 * redirect to login page
+
+# upload images on firebase
+
+- using promises as image will upload one by one
+- after upload ing image then get url

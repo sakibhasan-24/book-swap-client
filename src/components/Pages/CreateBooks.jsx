@@ -7,14 +7,19 @@ import {
 import { useState } from "react";
 import { app } from "../../firebase.config";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateBooks() {
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [imageMessageError, setImageMessageError] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [booksList, setBooksList] = useState([]);
+  const [listError, setListError] = useState(false);
+  const [listErrorText, setListErrorText] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     title: "",
@@ -97,7 +102,7 @@ export default function CreateBooks() {
     e.preventDefault();
     try {
       setLoading(true);
-      setError(false);
+      setListError(false);
       fetch("http://localhost:5000/books/create", {
         method: "POST",
         credentials: "include",
@@ -109,11 +114,13 @@ export default function CreateBooks() {
         .then((res) => res.json())
         .then((data) => {
           if (data.success === true) {
+            // console.log();
             setLoading(false);
-            setError(false);
+            setListError(false);
+            navigate(`/books/${data.booksList._id}`);
           }
           if (data.success === false) {
-            setError(true);
+            setListError(true);
             setLoading(false);
           }
         });
@@ -126,7 +133,30 @@ export default function CreateBooks() {
     const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
     setFormData({ ...formData, imageUrls: newImagesUrl });
   };
-  console.log(formData);
+  //   console.log(formData);
+
+  const handleShowAllBooks = () => {
+    setListError(false);
+    fetch(`http://localhost:5000/books/userbooks/${currentUser.userData._id}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setBooksList(data.allBooks);
+        setListErrorText(false);
+        // console.log(data.allBooks);
+      });
+    try {
+      if (booksList.length === 0) {
+        setListErrorText("No Books Found");
+      }
+    } catch (error) {
+      setListErrorText("something went wrong");
+    }
+  };
   return (
     <main className="max-w-4xl mx-auto p-4">
       <h1 className="text-center font-semibold my-8 text-4xl">Create Books</h1>
@@ -295,6 +325,45 @@ export default function CreateBooks() {
         />
         {error && <p className="text-red-600 text-xs">something went wrong</p>}
       </form>
+      {/* show all books */}
+      <div>
+        <button
+          onClick={handleShowAllBooks}
+          className="w-full text-green-600 font-semibold my-8"
+        >
+          Show all
+        </button>
+        <div className="flex items-center flex-col ">
+          {booksList &&
+            booksList.length > 0 &&
+            booksList.map((book) => (
+              //   (book) => console.log(book.imageUrls)
+              <div
+                className="border-4 p-2 flex w-1/2 justify-between    items-center border-sky-500 my-2"
+                key={book._id}
+              >
+                <div className="">
+                  <img
+                    src={book.imageUrls[0]}
+                    alt=""
+                    className="object-contain w-20 h-20 rounded-lg"
+                  />
+                </div>
+                <div>
+                  <h1>{book.title}</h1>
+                </div>
+                <div>
+                  <p className="text-red-500 hover:text-red-950 cursor-pointer">
+                    Delete
+                  </p>
+                  <p className="text-green-400 hover:text-green-800 cursor-pointer">
+                    Edit
+                  </p>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
     </main>
   );
 }
