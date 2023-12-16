@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import Contact from "./Contact";
 
 export default function Books() {
   const { id } = useParams();
 
+  const { currentUser } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const [bookInfo, setBookInfo] = useState(null);
 
+  const [buyNow, setBuyNow] = useState(false);
   useEffect(() => {
     const getSingleBookInfo = () => {
       setLoading(false);
@@ -74,6 +78,19 @@ export default function Books() {
         ) : (
           ""
         )}
+      </div>
+      <div>
+        {currentUser &&
+          currentUser.userData._id !== bookInfo?.owner &&
+          !buyNow && (
+            <button
+              onClick={() => setBuyNow(true)}
+              className="w-1/2 ml-28 lg:w-full  lg:mx-0 md:mx-0 text-white bg-slate-800 p-4 rounded-lg my-6"
+            >
+              Buy Now
+            </button>
+          )}
+        {buyNow && <Contact bookInfo={bookInfo} />}
       </div>
     </div>
   );
