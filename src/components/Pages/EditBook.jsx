@@ -4,13 +4,15 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { app } from "../../firebase.config";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-export default function CreateBooks() {
+export default function EditBook() {
   const { currentUser } = useSelector((state) => state.user);
+  const { id } = useParams();
+  console.log(id);
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [imageMessageError, setImageMessageError] = useState(null);
@@ -33,8 +35,24 @@ export default function CreateBooks() {
     sell: true,
     fixed: false,
   });
+
+  //
+  useEffect(() => {
+    // need async operation
+    //
+    const getBooks = async () => {
+      await fetch(`http://localhost:5000/books/getSingleBook/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          //   console.log(data);
+          setFormData(data.book);
+        });
+      //   console.log(formData);
+    };
+    getBooks();
+  }, [id]);
   const handleChangeFormData = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    // setFormData({ ...formData, [e.target.id]: e.target.value });
 
     if (
       e.target.id === "fixed" ||
@@ -42,6 +60,8 @@ export default function CreateBooks() {
       e.target.id === "borrow"
     ) {
       setFormData({ ...formData, [e.target.id]: e.target.checked });
+    } else {
+      setFormData({ ...formData, [e.target.id]: e.target.value });
     }
   };
 
@@ -103,7 +123,7 @@ export default function CreateBooks() {
     try {
       setLoading(true);
       setListError(false);
-      fetch("http://localhost:5000/books/create", {
+      fetch(`http://localhost:5000/books/updateuserbooks/${id}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -114,10 +134,9 @@ export default function CreateBooks() {
         .then((res) => res.json())
         .then((data) => {
           if (data.success === true) {
-            // console.log();
+            console.log(data);
             setLoading(false);
             setListError(false);
-            navigate(`/books/${data.booksList._id}`);
           }
           if (data.success === false) {
             setListError(true);
@@ -171,7 +190,7 @@ export default function CreateBooks() {
   };
   return (
     <main className="max-w-4xl mx-auto p-4">
-      <h1 className="text-center font-semibold my-8 text-4xl">Create Books</h1>
+      <h1 className="text-center font-semibold my-8 text-4xl">Update Book</h1>
       <form
         onSubmit={handleFormData}
         className="flex flex-col  gap-4 max-w-lg mx-auto"
@@ -185,7 +204,7 @@ export default function CreateBooks() {
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="title"
               onChange={handleChangeFormData}
-              defaultValue={formData.title}
+              value={formData.title}
             />
             <input
               type="text"
@@ -194,7 +213,7 @@ export default function CreateBooks() {
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="author"
               onChange={handleChangeFormData}
-              defaultValue={formData.author}
+              value={formData.author}
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -205,7 +224,7 @@ export default function CreateBooks() {
               placeholder="genre"
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
               onChange={handleChangeFormData}
-              defaultValue={formData.genre}
+              value={formData.genre}
             />
             <input
               id="address"
@@ -213,7 +232,7 @@ export default function CreateBooks() {
               name=""
               placeholder="address"
               onChange={handleChangeFormData}
-              defaultValue={formData.address}
+              value={formData.address}
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
             />
           </div>
@@ -222,7 +241,7 @@ export default function CreateBooks() {
             cols="10"
             placeholder="description"
             onChange={handleChangeFormData}
-            defaultValue={formData.description}
+            value={formData.description}
             rows="5"
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           ></textarea>
@@ -232,7 +251,7 @@ export default function CreateBooks() {
             placeholder="new like new good or old"
             id="conditions"
             onChange={handleChangeFormData}
-            defaultValue={formData.conditions}
+            value={formData.conditions}
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           />
           <div className="flex gap-4 flex-wrap">
@@ -273,7 +292,7 @@ export default function CreateBooks() {
             id="price"
             className=" p-2 border-2 border-gray-400 rounded-lg focus:outline-none my-6"
             placeholder="price"
-            defaultValue={formData.price}
+            value={formData.price}
             onChange={handleChangeFormData}
           />
         </div>
@@ -332,7 +351,7 @@ export default function CreateBooks() {
         </div>
         <input
           type="submit"
-          value={loading ? "creating..." : "create a books"}
+          value={loading ? "update..." : "update a books"}
           className="p-4 rounded-lg font-bold text-center bg-green-700 cursor-pointer"
         />
         {error && <p className="text-red-600 text-xs">something went wrong</p>}

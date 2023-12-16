@@ -9,6 +9,7 @@ import Profile from "../Pages/Profile";
 import Protected from "./Protected";
 import CreateBooks from "../Pages/CreateBooks";
 import Books from "../Pages/Books";
+import EditBook from "../Pages/EditBook";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,14 @@ const router = createBrowserRouter([
         element: (
           <Protected>
             <Books />
+          </Protected>
+        ),
+      },
+      {
+        path: "/editbooks/:id",
+        element: (
+          <Protected>
+            <EditBook />
           </Protected>
         ),
       },
