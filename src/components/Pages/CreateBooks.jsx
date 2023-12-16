@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 import { app } from "../../firebase.config";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CreateBooks() {
   const { currentUser } = useSelector((state) => state.user);
@@ -156,6 +156,18 @@ export default function CreateBooks() {
     } catch (error) {
       setListErrorText("something went wrong");
     }
+  };
+  const handleABook = (id) => {
+    fetch(`http://localhost:5000/books/userbooks/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        const newBookList = booksList.filter((book) => book._id !== id);
+        setBooksList(newBookList);
+      });
   };
   return (
     <main className="max-w-4xl mx-auto p-4">
@@ -343,17 +355,24 @@ export default function CreateBooks() {
                 key={book._id}
               >
                 <div className="">
-                  <img
-                    src={book.imageUrls[0]}
-                    alt=""
-                    className="object-contain w-20 h-20 rounded-lg"
-                  />
+                  <Link to={`/books/${book._id}`}>
+                    <img
+                      src={book.imageUrls[0]}
+                      alt=""
+                      className="object-contain w-20 h-20 rounded-lg"
+                    />
+                  </Link>
                 </div>
                 <div>
-                  <h1>{book.title}</h1>
+                  <Link to={`/books/${book._id}`}>
+                    <h1>{book.title}</h1>
+                  </Link>
                 </div>
                 <div>
-                  <p className="text-red-500 hover:text-red-950 cursor-pointer">
+                  <p
+                    onClick={() => handleABook(book._id)}
+                    className="text-red-500 hover:text-red-950 cursor-pointer"
+                  >
                     Delete
                   </p>
                   <p className="text-green-400 hover:text-green-800 cursor-pointer">
