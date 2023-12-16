@@ -31,13 +31,19 @@ export default function CreateBooks() {
     conditions: "",
     borrow: false,
     sell: true,
-    fixed: false,
+    fixedPrice: false,
   });
   const handleChangeFormData = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    if (
+      e.target.type === "number" ||
+      e.target.type === "text" ||
+      e.target.type === "textarea"
+    ) {
+      setFormData({ ...formData, [e.target.id]: e.target.value });
+    }
 
     if (
-      e.target.id === "fixed" ||
+      e.target.id === "fixedPrice" ||
       e.target.id === "sell" ||
       e.target.id === "borrow"
     ) {
@@ -133,8 +139,7 @@ export default function CreateBooks() {
     const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
     setFormData({ ...formData, imageUrls: newImagesUrl });
   };
-  //   console.log(formData);
-
+  console.log(formData);
   const handleShowAllBooks = () => {
     setListError(false);
     fetch(`http://localhost:5000/books/userbooks/${currentUser.userData._id}`, {
@@ -185,7 +190,7 @@ export default function CreateBooks() {
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="title"
               onChange={handleChangeFormData}
-              defaultValue={formData.title}
+              value={formData.title}
             />
             <input
               type="text"
@@ -194,7 +199,7 @@ export default function CreateBooks() {
               className="bg-slate-200 p-2 focus:outline-none rounded-lg"
               id="author"
               onChange={handleChangeFormData}
-              defaultValue={formData.author}
+              value={formData.author}
             />
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -205,7 +210,7 @@ export default function CreateBooks() {
               placeholder="genre"
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
               onChange={handleChangeFormData}
-              defaultValue={formData.genre}
+              value={formData.genre}
             />
             <input
               id="address"
@@ -213,7 +218,7 @@ export default function CreateBooks() {
               name=""
               placeholder="address"
               onChange={handleChangeFormData}
-              defaultValue={formData.address}
+              value={formData.address}
               className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4"
             />
           </div>
@@ -222,7 +227,7 @@ export default function CreateBooks() {
             cols="10"
             placeholder="description"
             onChange={handleChangeFormData}
-            defaultValue={formData.description}
+            value={formData.description}
             rows="5"
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           ></textarea>
@@ -232,7 +237,7 @@ export default function CreateBooks() {
             placeholder="new like new good or old"
             id="conditions"
             onChange={handleChangeFormData}
-            defaultValue={formData.conditions}
+            value={formData.conditions}
             className="bg-slate-200 p-2 focus:outline-none rounded-lg my-4 w-full"
           />
           <div className="flex gap-4 flex-wrap">
@@ -249,12 +254,12 @@ export default function CreateBooks() {
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="fixed"
+                id="fixedPrice"
                 onChange={handleChangeFormData}
                 className="w-4"
-                checked={formData.fixed}
+                checked={formData.fixedPrice}
               />
-              <span>fixed price</span>
+              <span>fixedPrice </span>
             </div>
             <div className="flex gap-2">
               <input
@@ -273,7 +278,7 @@ export default function CreateBooks() {
             id="price"
             className=" p-2 border-2 border-gray-400 rounded-lg focus:outline-none my-6"
             placeholder="price"
-            defaultValue={formData.price}
+            value={formData.price}
             onChange={handleChangeFormData}
           />
         </div>

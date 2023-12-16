@@ -33,7 +33,7 @@ export default function EditBook() {
     conditions: "",
     borrow: false,
     sell: true,
-    fixed: false,
+    fixedPrice: false,
   });
 
   //
@@ -51,17 +51,22 @@ export default function EditBook() {
     };
     getBooks();
   }, [id]);
+
   const handleChangeFormData = (e) => {
-    // setFormData({ ...formData, [e.target.id]: e.target.value });
+    if (
+      e.target.type === "number" ||
+      e.target.type === "text" ||
+      e.target.type === "textarea"
+    ) {
+      setFormData({ ...formData, [e.target.id]: e.target.value });
+    }
 
     if (
-      e.target.id === "fixed" ||
+      e.target.id === "fixedPrice" ||
       e.target.id === "sell" ||
       e.target.id === "borrow"
     ) {
       setFormData({ ...formData, [e.target.id]: e.target.checked });
-    } else {
-      setFormData({ ...formData, [e.target.id]: e.target.value });
     }
   };
 
@@ -118,6 +123,7 @@ export default function EditBook() {
     });
   };
   //   console.log(files);
+
   const handleFormData = (e) => {
     e.preventDefault();
     try {
@@ -259,19 +265,19 @@ export default function EditBook() {
               <input
                 type="checkbox"
                 id="borrow"
+                onChange={handleChangeFormData}
                 checked={formData.borrow}
                 className="w-4"
-                onChange={handleChangeFormData}
               />
               <span>Borrow</span>
             </div>
             <div className="flex gap-2">
               <input
                 type="checkbox"
-                id="fixed"
+                id="fixedPrice"
                 onChange={handleChangeFormData}
                 className="w-4"
-                checked={formData.fixed}
+                checked={formData.fixedPrice}
               />
               <span>fixed price</span>
             </div>
