@@ -9,7 +9,7 @@ export default function HomePages() {
       .then((res) => res.json())
       .then((data) => setBooks(data.books));
   }, []);
-  console.log(books);
+  // console.log(books);
   return (
     <div>
       {/* top */}
