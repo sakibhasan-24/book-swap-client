@@ -10,6 +10,7 @@ import Protected from "./Protected";
 import CreateBooks from "../Pages/CreateBooks";
 import Books from "../Pages/Books";
 import EditBook from "../Pages/EditBook";
+import Search from "../Pages/Search";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
             <EditBook />
           </Protected>
         ),
+      },
+      {
+        path: "/search",
+        element: <Search />,
       },
     ],
   },

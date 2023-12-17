@@ -131,4 +131,18 @@
 
 ### search Text
 
-- from search box
+# from search box
+
+- take a state
+- set state value
+- controlled for change it
+- using URLSearchParams send it search bar to url
+- make it string
+
+# from URL to search bar
+
+- using useEffect,easch time url change render the page
+- using URLSearchParams get url value
+- get value for search text
+
+* set it setSearch value state

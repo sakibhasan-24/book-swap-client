@@ -23,7 +23,9 @@ export default function Header() {
   useEffect(() => {
     const searchUrl = new URLSearchParams(location.search);
     const searchQuery = searchUrl.get("searchText");
-    setSearchText(searchQuery);
+    if (searchQuery) {
+      setSearchText(searchQuery);
+    }
   }, [location.search]);
   const dispatch = useDispatch();
   const handleSignOut = () => {
@@ -64,8 +66,8 @@ export default function Header() {
             className="  bg-transparent rounded-lg focus:outline-none focus:shadow-none w-24 sm:w-64 "
             type="text"
             placeholder="Search"
-            onChange={handleSearchText}
             value={searchText}
+            onChange={handleSearchText}
           />
           <button type="button">
             <CiSearch />
