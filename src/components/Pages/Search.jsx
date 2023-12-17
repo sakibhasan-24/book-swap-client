@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import SearchBook from "./SearchBook";
 
 export default function Search() {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showMore, setShowMore] = useState(true);
   const [searchData, setSearchData] = useState({
     searchText: "",
     borrow: false,
@@ -95,6 +97,33 @@ export default function Search() {
     laodSearchResult();
   }, [location.search]);
 
+  const handleShowMore = () => {
+    const urlParams = new URLSearchParams(location.search);
+    //
+    const searchQuery = urlParams.toString();
+    const numberOfResult = searchResult.length;
+    const starting = numberOfResult;
+    urlParams.set("starting", starting);
+
+    if (numberOfResult < 6) {
+      setShowMore(false);
+    }
+
+    try {
+      fetch(`http://localhost:5000/books/getAllBooks?${searchQuery}`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success === true) {
+            setSearchResult([...searchResult, ...data.books]);
+            setLoading(false);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="flex flex-col md:flex-row">
       {/* left */}
@@ -164,7 +193,27 @@ export default function Search() {
       {/* right */}
       <div>
         {/* <h1>Result {searchResult.length}</h1> */}
-        {}
+        {!loading && searchResult.length === 0 && (
+          <p className="text-3xl font-semibold text-slate-700">
+            No result Found
+          </p>
+        )}
+        {loading && (
+          <p className="text-3xl font-semibold text-slate-700">Loading...</p>
+        )}
+        <div className="p-4 flex flex-wrap gap-4">
+          {searchResult.map((book) => (
+            <SearchBook key={book._id} book={book} />
+          ))}
+        </div>
+        {showMore && (
+          <button
+            onClick={handleShowMore}
+            className="w-full mx-auto text-blue-600 font-bold "
+          >
+            Show More
+          </button>
+        )}
       </div>
     </div>
   );
