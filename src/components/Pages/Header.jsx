@@ -1,11 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutFailure, signOutStart, signOutSuccess } from "../redux/user";
+import { useEffect, useState } from "react";
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   //   console.log(currentUser.user.photo);
+  const navigate = useNavigate();
+  const [searchText, setSearchText] = useState("");
+  const handleSearchText = (e) => {
+    setSearchText(e.target.value);
+  };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const searchUrl = new URLSearchParams(window.location.search);
+    // console.log(searchUrl);
+    searchUrl.set("searchText", searchText);
+    const searchQuery = searchUrl.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+  useEffect(() => {
+    const searchUrl = new URLSearchParams(location.search);
+    const searchQuery = searchUrl.get("searchText");
+    setSearchText(searchQuery);
+  }, [location.search]);
   const dispatch = useDispatch();
   const handleSignOut = () => {
     try {
@@ -37,13 +56,20 @@ export default function Header() {
             Book <span className="text-orange-700">Swap</span>
           </Link>
         </h1>
-        <form className="bg-slate-100 rounded-lg flex items-center p-3">
+        <form
+          onSubmit={handleSearch}
+          className="bg-slate-100 rounded-lg flex items-center p-3"
+        >
           <input
             className="  bg-transparent rounded-lg focus:outline-none focus:shadow-none w-24 sm:w-64 "
             type="text"
             placeholder="Search"
+            onChange={handleSearchText}
+            value={searchText}
           />
-          <CiSearch />
+          <button type="button">
+            <CiSearch />
+          </button>
         </form>
         <div className="flex items-center space-x-4">
           <Link

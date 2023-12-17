@@ -108,3 +108,27 @@
 
 - using promises as image will upload one by one
 - after upload ing image then get url
+
+# create a page for create a books
+
+- only logged in user can create a book
+- create a form
+
+# delete a book
+
+- delete a book from database
+
+# book details
+
+- based on single book imagelist make some photo
+- implement book details page based on information of book
+
+# implement contact fucntionality
+
+- if not user's book can buy it
+
+# search functionality
+
+### search Text
+
+- from search box

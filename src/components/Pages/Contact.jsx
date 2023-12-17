@@ -25,7 +25,7 @@ export default function Contact({ bookInfo }) {
   }, [bookInfo.owner]);
 
   return (
-    <div className="my-8">
+    <div className="my-8 p-4 ">
       <h1 className="text-center font-semibold text-slate-900">
         Contact with{" "}
         <Link to="https://mail.google.com/mail/u/0/#inbox">
