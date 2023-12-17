@@ -146,3 +146,11 @@
 - get value for search text
 
 * set it setSearch value state
+
+# create search UI
+
+# implement search state value
+
+- get value from form
+- take value from url
+- fetch api with this url
