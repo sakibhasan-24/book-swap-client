@@ -1,5 +1,7 @@
 # Book Swap Projects
 
+# https://book-swap-64d94.web.app/
+
 ## installation part
 
 - install react js
@@ -154,3 +156,23 @@
 - get value from form
 - take value from url
 - fetch api with this url
+
+# implement search functionality
+
+- using useeffect if any change in search value,set it url and vice-versa
+
+# implement search result page
+
+- get the value and set
+
+# limitations
+
+- design
+- some page is not found easily
+
+# future task
+
+- implement review system
+- cart system
+- implement payment system
+-

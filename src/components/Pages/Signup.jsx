@@ -17,7 +17,10 @@ export default function Signup() {
     e.preventDefault();
     setLoading(true);
 
-    fetch("http://localhost:5000/signup", {
+    // https://book-swap-eight.vercel.app//signup
+    // fetch("https://book-swap-gkpe.onrender.com/signup",
+    fetch;
+    fetch("https://book-swap-eight.vercel.app/signup", {
       method: "POST",
       credentials: "include",
       headers: {

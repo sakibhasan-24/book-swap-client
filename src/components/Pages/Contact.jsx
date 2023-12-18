@@ -9,10 +9,10 @@ export default function Contact({ bookInfo }) {
     setMessage(e.target.value);
   };
 
-  console.log(`http://localhost:5000/user/${bookInfo?.owner}`);
+  // console.log(`https://book-swap-gkpe.onrender.com/user/${bookInfo?.owner}`);
   useEffect(() => {
     const loadUser = async () => {
-      fetch(`http://localhost:5000/user/${bookInfo?.owner}`, {
+      fetch(`https://book-swap-eight.vercel.app/user/${bookInfo?.owner}`, {
         credentials: "include",
       })
         .then((res) => res.json())

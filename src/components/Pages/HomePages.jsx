@@ -5,7 +5,7 @@ export default function HomePages() {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/books/getAllBooks?searchText=head")
+    fetch("https://book-swap-eight.vercel.app/books/getAllBooks")
       .then((res) => res.json())
       .then((data) => setBooks(data.books));
   }, []);

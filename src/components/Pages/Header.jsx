@@ -5,6 +5,10 @@ import { signOutFailure, signOutStart, signOutSuccess } from "../redux/user";
 import { useEffect, useState } from "react";
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const [isDark, setIsDark] = useState(false);
+  const handleIsDark = () => {
+    setIsDark(!isDark);
+  };
   //   console.log(currentUser.user.photo);
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
@@ -20,6 +24,7 @@ export default function Header() {
     const searchQuery = searchUrl.toString();
     navigate(`/search?${searchQuery}`);
   };
+  // console.log(isDark);
   useEffect(() => {
     const searchUrl = new URLSearchParams(location.search);
     const searchQuery = searchUrl.get("searchText");
@@ -29,9 +34,11 @@ export default function Header() {
   }, [location.search]);
   const dispatch = useDispatch();
   const handleSignOut = () => {
+    console.log("sign out");
+    console.log(currentUser);
     try {
       dispatch(signOutStart(true));
-      fetch(`http://localhost:5000/signout`, {
+      fetch(`https://book-swap-eight.vercel.app/logout`, {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -74,12 +81,6 @@ export default function Header() {
           </button>
         </form>
         <div className="flex items-center space-x-4">
-          <Link
-            to="/about"
-            className="hidden sm:inline-block text-sm sm:text-xl font-bold hover:underline"
-          >
-            About
-          </Link>
           {currentUser ? (
             <>
               <Link to="/profile">

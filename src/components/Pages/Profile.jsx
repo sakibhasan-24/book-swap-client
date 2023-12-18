@@ -76,28 +76,29 @@ export default function Profile() {
   const handleFormDataUpdate = (e) => {
     e.preventDefault();
 
-    // console.log("clicked");
-
     try {
       dispatch(updateStart(true));
-      fetch(`http://localhost:5000/update/${currentUser?.userData?._id}`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      fetch(
+        `https://book-swap-eight.vercel.app/update/${currentUser?.userData?._id}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
-          //   console.log("update", data);
+          console.log("update", data);
 
           if (data.success === false) {
-            dispatch(updateFailure(data.message));
+            dispatch(updateFailure(data));
+            // console.log(data);
             return;
           }
-          //   console.log(data.message);
-          //   console.log("updated ", data);
+
           dispatch(updateSuccess(data));
         });
     } catch (error) {
@@ -108,7 +109,7 @@ export default function Profile() {
   const handleDelete = (id) => {
     try {
       dispatch(deleteStart(true));
-      fetch(`http://localhost:5000/delete/${id}`, {
+      fetch(`https://book-swap-eight.vercel.app/delete/${id}`, {
         method: "DELETE",
         credentials: "include",
       })
@@ -125,9 +126,10 @@ export default function Profile() {
     }
   };
   const handleSignOut = () => {
+    console.log("from profile");
     try {
       dispatch(signOutStart(true));
-      fetch(`http://localhost:5000/signout`, {
+      fetch(`https://book-swap-eight.vercel.app/logout`, {
         credentials: "include",
       })
         .then((res) => res.json())

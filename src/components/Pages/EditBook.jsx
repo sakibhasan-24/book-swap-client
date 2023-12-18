@@ -41,7 +41,9 @@ export default function EditBook() {
     // need async operation
     //
     const getBooks = async () => {
-      await fetch(`http://localhost:5000/books/getSingleBook/${id}`)
+      await fetch(
+        `https://book-swap-eight.vercel.app/books/getSingleBook/${id}`
+      )
         .then((res) => res.json())
         .then((data) => {
           //   console.log(data);
@@ -129,13 +131,16 @@ export default function EditBook() {
     try {
       setLoading(true);
       setListError(false);
-      fetch(`http://localhost:5000/books/updateuserbooks/${id}`, {
+      fetch(`https://book-swap-eight.vercel.app/books/updateuserbooks/${id}`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, owner: currentUser.userData._id }),
+        body: JSON.stringify({
+          ...formData,
+          owner: currentUser.userData._id,
+        }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -162,12 +167,15 @@ export default function EditBook() {
 
   const handleShowAllBooks = () => {
     setListError(false);
-    fetch(`http://localhost:5000/books/userbooks/${currentUser.userData._id}`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      `https://book-swap-eight.vercel.app/books/userbooks/${currentUser.userData._id}`,
+      {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setBooksList(data.allBooks);
@@ -183,7 +191,7 @@ export default function EditBook() {
     }
   };
   const handleABook = (id) => {
-    fetch(`http://localhost:5000/books/userbooks/${id}`, {
+    fetch(`https://book-swap-eight.vercel.app//books/userbooks/${id}`, {
       method: "DELETE",
       credentials: "include",
     })

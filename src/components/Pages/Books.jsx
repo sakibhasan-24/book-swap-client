@@ -14,7 +14,7 @@ export default function Books() {
   useEffect(() => {
     const getSingleBookInfo = () => {
       setLoading(false);
-      fetch(`http://localhost:5000/books/getSingleBook/${id}`)
+      fetch(`https://book-swap-eight.vercel.app/books/getSingleBook/${id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.success === true) {

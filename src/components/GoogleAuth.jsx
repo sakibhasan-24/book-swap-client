@@ -27,7 +27,7 @@ export default function GoogleAuth() {
           photoURL,
         };
         // send it backend
-        fetch("http://localhost:5000/signup/google", {
+        fetch("https://book-swap-eight.vercel.app/signup/google", {
           method: "POST",
           credentials: "include",
           headers: {

@@ -104,12 +104,14 @@ export default function CreateBooks() {
     });
   };
   //   console.log(files);
+  // https://book-swap-eight.vercel.app/
+  // https://book-swap-eight.vercel.app/
   const handleFormData = (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       setListError(false);
-      fetch("http://localhost:5000/books/create", {
+      fetch("https://book-swap-eight.vercel.app/books/create", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -139,15 +141,18 @@ export default function CreateBooks() {
     const newImagesUrl = formData.imageUrls.filter((img, idx) => idx !== id);
     setFormData({ ...formData, imageUrls: newImagesUrl });
   };
-  console.log(formData);
+  // console.log(formData);
   const handleShowAllBooks = () => {
+    console.log(
+      `https://book-swap-eight.vercel.app/books/userbooks/${currentUser.userData._id}`
+    );
     setListError(false);
-    fetch(`http://localhost:5000/books/userbooks/${currentUser.userData._id}`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      `https://book-swap-eight.vercel.app/books/userbooks/${currentUser.userData._id}`,
+      {
+        credentials: "include",
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setBooksList(data.allBooks);
@@ -163,7 +168,7 @@ export default function CreateBooks() {
     }
   };
   const handleABook = (id) => {
-    fetch(`http://localhost:5000/books/userbooks/${id}`, {
+    fetch(`https://book-swap-eight.vercel.app/books/userbooks/${id}`, {
       method: "DELETE",
       credentials: "include",
     })

@@ -24,7 +24,7 @@ export default function Login() {
     // setLoading(true);
     dispatch(signInStart(true));
 
-    fetch("http://localhost:5000/signup/login", {
+    fetch("https://book-swap-eight.vercel.app/signup/login", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -89,14 +89,12 @@ export default function Login() {
         <GoogleAuth />
       </form>
       <p className="text-center font-semibold text-xl">
-        don't Have an account?
+        do not Have an account?
         <Link className="text-blue-500 ml-4" to="/signup">
           Sign up
         </Link>
       </p>
-      <p className="text-red-500 font-semibold text-center text-xs">
-        {error && error}
-      </p>
+      <p className="text-red-500 font-semibold text-center text-xs"></p>
     </div>
   );
 }
